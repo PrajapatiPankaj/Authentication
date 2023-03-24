@@ -11,9 +11,18 @@ const userAuthContext = createContext();
 
 export function UserAuthContextProvider({ children }) {
   const [user, setUser] = useState("");
+  const [error, setError] = useState("");
 
   function signUp(email, password) {
-    createUserWithEmailAndPassword(auth, email, password);
+    createUserWithEmailAndPassword(auth, email, password).then(
+      (userCredential) => {
+        // User successfully signed up
+        
+      }
+    ).catch((err)=>{
+        console.log("Error in authentication:",err.message)
+        setError(err.message)
+    });
   }
 
   function signIn(email, password) {
@@ -31,7 +40,7 @@ export function UserAuthContextProvider({ children }) {
   }, []);
 
   return (
-    <userAuthContext.Provider value={{ user, signUp }}>
+    <userAuthContext.Provider value={{ user, signUp, error }}>
       {children}
     </userAuthContext.Provider>
   );

@@ -1,32 +1,25 @@
 import React, { useState } from "react";
-import { Formik, Field, Form } from "formik";
-import { useNavigate } from "react-router-dom";
+import { Formik, Field, Form} from "formik";
 import "../maincss/register.css";
 import { useUserAuth } from "../context/authContextApi";
+import { Alert } from "react-bootstrap";
+
 
 function Register() {
-  const navigate = useNavigate();
+  const { signUp,error } = useUserAuth();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const { signUp } = useUserAuth();
+  const handleSubmit = async (e,values) => {
+    if (await signUp(values.email, values.password)) {
+      alert("Register Successfully...")
+      e.target.reset();
+  }
+} 
+  
 
   return (
     <Formik
       initialValues={{ name: "", email: "", password: "", phone: "" }}
-      onSubmit={(values, { setSubmitting }) => {
-        console.log("Values in Formik :", values);
-        try{
-            signUp(values.email, values.password);
-        }catch(err){
-            console.log("err in signUp:",err)
-        }
-          
-        setTimeout(() => {
-          setSubmitting(false);
-        }, 1000);
-      }}
+      onSubmit={handleSubmit}
     >
       {({ isSubmitting }) => (
         <Form>
@@ -34,6 +27,7 @@ function Register() {
             <div className="row justify-content-center align-items-center">
               <div className="col-6 m-auto">
                 <div className="section rounded shadow ">
+                  {error && <Alert variant="danger">{error}</Alert>}
                   <div className="col-12">
                     <div className="form-group">
                       <label htmlFor="name">Name</label>
