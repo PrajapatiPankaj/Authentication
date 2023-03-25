@@ -1,20 +1,24 @@
 import React, { useState } from "react";
-import { Formik, Field, Form} from "formik";
+import { Formik, Field, Form } from "formik";
 import "../maincss/register.css";
 import { useUserAuth } from "../context/authContextApi";
 import { Alert } from "react-bootstrap";
 
-
 function Register() {
-  const { signUp,error } = useUserAuth();
+  const { signUp, error } = useUserAuth();
 
-  const handleSubmit = async (e,values) => {
-    if (await signUp(values.email, values.password)) {
-      alert("Register Successfully...")
-      e.target.reset();
-  }
-} 
-  
+  const handleSubmit = async (values,actions) => {
+    await signUp(values.email, values.password);
+    alert("Register Successfully...");
+    actions.resetForm({ 
+          values:{
+              name:'',
+              email:'',
+              password:'',
+              phone:''
+          }
+    })
+  };
 
   return (
     <Formik

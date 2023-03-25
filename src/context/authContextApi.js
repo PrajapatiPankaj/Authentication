@@ -14,15 +14,14 @@ export function UserAuthContextProvider({ children }) {
   const [error, setError] = useState("");
 
   function signUp(email, password) {
-    createUserWithEmailAndPassword(auth, email, password).then(
-      (userCredential) => {
-        // User successfully signed up
-        
-      }
-    ).catch((err)=>{
-        console.log("Error in authentication:",err.message)
-        setError(err.message)
-    });
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+          console.log("userData:",userCredential)
+      })
+      .catch((err) => {
+        console.log("Error in authentication:", err.message);
+        setError(err.message);
+      });
   }
 
   function signIn(email, password) {
