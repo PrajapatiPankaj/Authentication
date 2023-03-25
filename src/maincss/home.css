@@ -1,0 +1,8 @@
+.section{
+    background-color: silver;
+    height: 100%;
+    padding: 3rem;
+    align-items: center;
+    border: 2px solid green;
+    border-radius: 5px;
+}

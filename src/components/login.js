@@ -1,39 +1,41 @@
-import React,{useState} from 'react'
 import { Formik, Field, Form } from "formik";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { useUserAuth } from "../context/authContextApi";
+import {Alert} from 'react-bootstrap'
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const { logIn, logerr } = useUserAuth();
+  const navigate= useNavigate();
 
-    const [values, setValues] = useState({});
+  const handleSubmit = async (values, actions) => {
+    const mailFormate = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-
-    const handleSubmit= (e)=> {
-          setValues(preVal=>({
-            ...preVal,
-            [e.target.name] : e.target.value
-          }))
+    if (values.email.match(mailFormate)) {
+      await logIn(values.email, values.password);
+      actions.resetForm({
+        values: {
+          name: "",
+          email: "",
+          password: "",
+          phone: "",
+        },
+      });
+      navigate('/home')
+    } else {
+      alert("Enter Valid Email...!");
     }
-
-    console.log("values in state:", values)
-
+  };
 
   return (
-    <Formik
-      initialValues={{ name: "", email: "", password: "", phone: "" }}
-      onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          console.log("Values : ", values);
-            handleSubmit(values)
-          setSubmitting(false);
-        }, 1000);
-      }}
-    >
+    <Formik initialValues={{ email: "", password: "" }} onSubmit={handleSubmit}>
       {({ isSubmitting }) => (
-        <Form >
+        <Form>
           <div className="container-fluid">
             <div className="row justify-content-center align-items-center">
               <div className="col-6 m-auto">
                 <div className="section rounded shadow mt-5">
+                  {logerr && <Alert variant="danger">{logerr}</Alert>}
                   <div className="form-group">
                     <label htmlFor="email">Email Address</label>
                     <Field name="email" className="form-control" type="email" />
@@ -84,14 +86,12 @@ function Login() {
 
 export default Login;
 
-
-
-            // <a className="small text-muted" href="#!">
-            //     Forgot password?
-            //   </a>
-            //   <p className="mb-5 pb-lg-2" style={{ color: "#393f81" }}>
-            //     Don't have an account?{" "}
-            //    <Link to='/register'> <a href="#!" style={{ color: "#393f81" }}>
-            //       Register here
-            //     </a></Link>
-            //   </p>
+// <a className="small text-muted" href="#!">
+//     Forgot password?
+//   </a>
+//   <p className="mb-5 pb-lg-2" style={{ color: "#393f81" }}>
+//     Don't have an account?{" "}
+//    <Link to='/register'> <a href="#!" style={{ color: "#393f81" }}>
+//       Register here
+//     </a></Link>
+//   </p>

@@ -1,23 +1,38 @@
-import React, { useState } from "react";
 import { Formik, Field, Form } from "formik";
 import "../maincss/register.css";
 import { useUserAuth } from "../context/authContextApi";
 import { Alert } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const { signUp, error } = useUserAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = async (values,actions) => {
-    await signUp(values.email, values.password);
-    alert("Register Successfully...");
-    actions.resetForm({ 
-          values:{
-              name:'',
-              email:'',
-              password:'',
-              phone:''
-          }
-    })
+  const handleSubmit = async (values, actions) => {
+    const mailFormate = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    if (
+      values.email.match(mailFormate) &&
+      values.email !== "" &&
+      values.name !== "" &&
+      values.password !== "" &&
+      values.phone !== ""
+    ) {
+      await signUp(values.email, values.password);
+      if(error){
+        actions.resetForm({
+          values: {
+            name: "",
+            email: "",
+            password: "",
+            phone: "",
+          },
+        });
+        navigate("/");
+      }
+    } else {
+      alert("Enter Valid Data");
+    }
   };
 
   return (
